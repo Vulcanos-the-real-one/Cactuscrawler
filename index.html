@@ -11,33 +11,60 @@
     
     <!-- DUNGEON-BEREICH -->
     <section id="dungeon-zone">
-      <h2>Dungeon Ebene <span id="floor">1</span></h2>
+      <div class="header-info">
+        <h2>Dungeon Ebene <span id="floor">1</span></h2>
+        <span id="monster-type-badge" class="badge">Normal</span>
+      </div>
+      
       <div id="monster-card">
-        <div id="monster-sprite">🐛</div>
-        <div id="monster-name">Unkraut-Motte</div>
+        <div id="monster-avatar" class="monster-icon glow"></div>
+        <div id="monster-name">Wüsten-Schnecke</div>
         <div class="hp-bar-container">
           <div id="monster-hp-bar"></div>
         </div>
         <p>HP: <span id="monster-hp">20</span> / <span id="monster-max-hp">20</span></p>
-        <button id="attack-btn">Monster Angreifen ⚔️</button>
+        <button id="attack-btn" class="btn-action btn-red">Monster Angreifen ⚔️</button>
       </div>
     </section>
 
     <!-- KAKTUS / CLICKER-BEREICH -->
     <section id="clicker-zone">
       <div id="stats">
-        <p>💧 Wasser: <span id="water">0</span></p>
-        <p>🪙 Gold: <span id="gold">0</span></p>
-        <p>🌵 Kaktus-Power: <span id="power">1</span></p>
+        <div class="stat-box">💧 <span id="water">0</span></div>
+        <div class="stat-box">🪙 <span id="gold">0</span></div>
+        <div class="stat-box">🌵 PWR <span id="power">1</span></div>
       </div>
 
-      <div id="cactus-clicker">🌵</div>
+      <div id="click-area">
+        <div id="cactus-clicker" class="cactus-avatar"></div>
+      </div>
 
-      <div id="upgrades">
-        <button id="upgrade-water-btn">Besserer Gießer (+1 Wasser/Klick) <br>Kosten: <span id="cost-water">10</span> 💧</button>
-        <button id="upgrade-power-btn">Stacheln schärfen (+1 Power) <br>Kosten: <span id="cost-power">15</span> 🪙</button>
+      <!-- TABS FÜR UPGRADES / GAMBLE -->
+      <div class="tab-buttons">
+        <button id="tab-upgrades-btn" class="tab-btn active">Upgrades</button>
+        <button id="tab-gamble-btn" class="tab-btn">🎰 Casino & Loot</button>
+      </div>
+
+      <div id="tab-upgrades" class="tab-content active">
+        <button id="upgrade-water-btn" class="btn-action">Besserer Gießer (+1 💧/Klick)<br>Kosten: <span id="cost-water">10</span> 💧</button>
+        <button id="upgrade-power-btn" class="btn-action">Stacheln schärfen (+1 PWR)<br>Kosten: <span id="cost-power">15</span> 🪙</button>
+      </div>
+
+      <div id="tab-gamble" class="tab-content">
+        <div class="gamble-box">
+          <h4>Kaktus-Slots (50 🪙)</h4>
+          <div id="slot-display">🌵 | 🌵 | 🌵</div>
+          <button id="spin-slot-btn" class="btn-action btn-gold">Drehen!</button>
+        </div>
+        <div class="gamble-box">
+          <h4>Mystery-Kiste (100 💧)</h4>
+          <button id="open-box-btn" class="btn-action btn-purple">Kiste öffnen 📦</button>
+        </div>
       </div>
     </section>
+
+    <!-- ZUFALLSEVENT: FLIEGENDER KAKTUS -->
+    <div id="random-event-item" class="hidden">🌵✨</div>
 
   </div>
   <script src="script.js"></script>
