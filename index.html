@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CactusCrawler</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    
+    <!-- DUNGEON-BEREICH -->
+    <section id="dungeon-zone">
+      <h2>Dungeon Ebene <span id="floor">1</span></h2>
+      <div id="monster-card">
+        <div id="monster-sprite">🐛</div>
+        <div id="monster-name">Unkraut-Motte</div>
+        <div class="hp-bar-container">
+          <div id="monster-hp-bar"></div>
+        </div>
+        <p>HP: <span id="monster-hp">20</span> / <span id="monster-max-hp">20</span></p>
+        <button id="attack-btn">Monster Angreifen ⚔️</button>
+      </div>
+    </section>
+
+    <!-- KAKTUS / CLICKER-BEREICH -->
+    <section id="clicker-zone">
+      <div id="stats">
+        <p>💧 Wasser: <span id="water">0</span></p>
+        <p>🪙 Gold: <span id="gold">0</span></p>
+        <p>🌵 Kaktus-Power: <span id="power">1</span></p>
+      </div>
+
+      <div id="cactus-clicker">🌵</div>
+
+      <div id="upgrades">
+        <button id="upgrade-water-btn">Besserer Gießer (+1 Wasser/Klick) <br>Kosten: <span id="cost-water">10</span> 💧</button>
+        <button id="upgrade-power-btn">Stacheln schärfen (+1 Power) <br>Kosten: <span id="cost-power">15</span> 🪙</button>
+      </div>
+    </section>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
