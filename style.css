@@ -1,33 +1,22 @@
-:root {
-  --bg-color: #0b0c10;
-  --card-bg: #1f2833;
-  --accent-cyan: #66fcf1;
-  --accent-green: #45a29e;
-  --text-main: #c5c6c7;
-  --text-bright: #ffffff;
-  --red: #ff4757;
-  --gold: #f1c40f;
-  --purple: #9b59b6;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', system-ui, sans-serif;
   user-select: none;
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-main);
+  background-color: #0b0c10;
+  color: #fff;
   display: flex;
   justify-content: center;
-  align-items: center;
   min-height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
+/* Partikel Canvas im Hintergrund */
 #particle-canvas {
   position: absolute;
   top: 0;
@@ -35,319 +24,224 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 10;
 }
 
 #game-container {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  background: rgba(31, 40, 51, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  max-width: 900px;
-  width: 95%;
-}
-
-/* DUNGEON BEREICH */
-#dungeon-zone {
-  flex: 1;
-  background-color: #121212;
-  border-radius: 12px;
-  padding: 20px;
+  width: 100%;
+  max-width: 420px;
+  background: #1f2833;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #333;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 40px rgba(0,0,0,0.9);
+}
+
+/* Floating Text FX */
+.floating-text {
+  position: absolute;
+  font-weight: 900;
+  font-size: 1.5rem;
+  pointer-events: none;
+  z-index: 99;
+  animation: floatUp 0.6s ease-out forwards;
+  text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-50px) scale(1.4); }
+}
+
+/* Screen Shake */
+.shake { animation: shake 0.12s ease-in-out 2; }
+@keyframes shake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-6px, 4px); }
+  75% { transform: translate(6px, -4px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Dungeon Section */
+#dungeon-zone {
+  background: #121821;
+  padding: 15px;
+  text-align: center;
+  border-bottom: 2px solid #45a29e;
 }
 
 .header-info {
-  text-align: center;
-  width: 100%;
-}
-
-.header-info h2 {
-  color: var(--text-bright);
-  font-size: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .badge {
-  display: inline-block;
-  background: var(--accent-green);
-  color: #000;
-  padding: 2px 8px;
+  background: #45a29e;
+  color: #0b0c10;
+  padding: 3px 10px;
   border-radius: 12px;
-  font-size: 0.8rem;
   font-weight: bold;
-  margin-top: 5px;
+  font-size: 0.8rem;
 }
 
 #monster-card {
-  text-align: center;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: #0b0c10;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #1f2833;
 }
 
 #monster-avatar {
-  width: 120px;
-  height: 120px;
-  margin: 15px 0;
+  height: 90px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 #monster-img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
-}
-
-#monster-name {
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: var(--text-bright);
-  margin-bottom: 8px;
+  max-height: 80px;
+  filter: drop-shadow(0 0 10px rgba(255, 71, 87, 0.5));
+  transition: transform 0.1s;
 }
 
 .hp-bar-container {
   width: 100%;
-  height: 16px;
-  background-color: #333;
-  border-radius: 8px;
+  height: 14px;
+  background-color: #2c3540;
+  border-radius: 7px;
   overflow: hidden;
-  margin-bottom: 5px;
+  margin: 10px 0;
 }
 
 #monster-hp-bar {
   width: 100%;
   height: 100%;
-  background-color: var(--red);
-  transition: width 0.1s linear;
+  background: linear-gradient(90deg, #ff4757, #ff6b81);
+  transition: width 0.15s ease-out;
 }
 
-/* CLICKER BEREICH */
+/* Clicker Section */
 #clicker-zone {
-  flex: 1.2;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  flex-grow: 1;
 }
 
 #stats {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+  margin-bottom: 15px;
 }
 
 .stat-box {
-  background-color: #121212;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: bold;
-  color: var(--text-bright);
-  border: 1px solid #333;
   flex: 1;
+  background: #0b0c10;
+  padding: 10px;
+  border-radius: 8px;
   text-align: center;
-  font-size: 0.9rem;
+  font-weight: bold;
+  border: 1px solid #45a29e;
 }
 
 #click-area {
-  text-align: center;
-  background: #121212;
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  height: 120px;
 }
 
 .cactus-img {
   width: 100px;
   height: 100px;
+  object-fit: contain;
   cursor: pointer;
+  filter: drop-shadow(0 0 15px rgba(102, 252, 241, 0.4));
   transition: transform 0.05s ease;
 }
 
 .cactus-img:active {
-  transform: scale(0.92);
+  transform: scale(0.85) rotate(-5deg);
 }
 
-#active-ability-info {
-  font-size: 0.85rem;
-  color: var(--accent-cyan);
-  margin-top: 5px;
-}
-
-/* TABS */
+/* Tabs */
 .tab-buttons {
   display: flex;
   gap: 5px;
+  margin-bottom: 12px;
 }
 
 .tab-btn {
   flex: 1;
+  background: #0b0c10;
+  border: 1px solid #45a29e;
+  color: #66fcf1;
   padding: 8px;
-  background: #121212;
-  border: 1px solid #333;
-  color: var(--text-main);
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
 }
 
 .tab-btn.active {
-  background: var(--accent-green);
-  color: #000;
-  border-color: var(--accent-green);
+  background: #66fcf1;
+  color: #0b0c10;
 }
 
-.tab-content {
-  display: none;
-  background: #121212;
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.gamble-box {
+  background: #0b0c10;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid #333;
-  min-height: 160px;
-}
-
-.tab-content.active {
-  display: block;
-}
-
-/* BUTTONS & ACTIONS */
-.btn-action {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  border: none;
-  border-radius: 6px;
-  background: var(--accent-cyan);
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.btn-action:hover:not(:disabled) {
-  opacity: 0.9;
-}
-
-.btn-action:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.btn-red { background: var(--red); color: #fff; }
-.btn-gold { background: var(--gold); color: #000; }
-.btn-purple { background: var(--purple); color: #fff; }
-
-.btn-small {
-  padding: 5px 8px;
-  font-size: 0.8rem;
-  width: auto;
-  margin-top: 0;
-}
-
-/* KAKTEEN LISTE */
-.cacti-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 180px;
-  overflow-y: auto;
-}
-
-.cactus-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #1f2833;
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-}
-
-.cactus-info h4 {
-  color: var(--text-bright);
-}
-
-.unlock-req {
-  color: var(--red);
-  font-size: 0.75rem;
-}
-
-.cactus-actions {
-  display: flex;
-  gap: 4px;
-}
-
-/* GAMBLE BOX */
-.gamble-box {
-  background: #1f2833;
-  padding: 10px;
-  border-radius: 6px;
   margin-bottom: 8px;
   text-align: center;
+  border: 1px solid #333;
 }
 
 #slot-display {
-  font-size: 1.2rem;
-  margin: 5px 0;
+  font-size: 1.6rem;
+  letter-spacing: 5px;
+  margin: 8px 0;
+  color: #f1c40f;
 }
 
-/* ANIMATIONEN */
-.shake {
-  animation: shake 0.12s ease-in-out;
-}
-
-@keyframes shake {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-4px, 2px); }
-  50% { transform: translate(4px, -2px); }
-  75% { transform: translate(-2px, -4px); }
-  100% { transform: translate(0, 0); }
-}
-
-.floating-text {
-  position: absolute;
+/* Buttons */
+.btn-action {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #66fcf1;
+  color: #0b0c10;
   font-weight: bold;
-  pointer-events: none;
-  animation: floatUp 0.6s ease-out forwards;
-  z-index: 10;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 0.95rem;
 }
+.btn-red { background: #ff4757; color: #fff; }
+.btn-gold { background: #f1c40f; color: #000; }
+.btn-purple { background: #9b59b6; color: #fff; }
 
-@keyframes floatUp {
-  0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-30px); }
-}
+.btn-action:disabled { opacity: 0.3; cursor: not-allowed; }
 
+/* Random Event */
 #random-event-item {
   position: absolute;
-  top: 20%;
-  left: 50%;
-  font-size: 2rem;
+  font-size: 2.5rem;
   cursor: pointer;
-  z-index: 5;
-  animation: pulse 1s infinite alternate;
+  z-index: 99;
+  animation: fly 4s linear infinite;
 }
 
-.hidden { display: none !important; }
+.hidden { display: none; }
 
-@keyframes pulse {
-  from { transform: scale(1); }
-  to { transform: scale(1.2); }
-}
-
-@media (max-width: 650px) {
-  #game-container {
-    flex-direction: column;
-  }
+@keyframes fly {
+  0% { top: 20%; left: -60px; }
+  50% { top: 60%; }
+  100% { top: 30%; left: 450px; }
 }
