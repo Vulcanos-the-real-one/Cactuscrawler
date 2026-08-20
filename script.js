@@ -7,12 +7,12 @@ let cactusPower = 1;
 let waterUpgradeCost = 10;
 let powerUpgradeCost = 15;
 
-// MONSTER DATENBANK
+// MONSTER DATENBANK (Pfade zu deinen Bildern)
 const MONSTER_TYPES = [
-  { name: "Wüsten-Schnecke", class: "monster-snail", hpMul: 1, goldMul: 1 },
-  { name: "Sand-Skorpion", class: "monster-scorpion", hpMul: 1.4, goldMul: 1.5 },
-  { name: "Stein-Golem", class: "monster-golem", hpMul: 2.2, goldMul: 2.5 },
-  { name: "BOSS: Kaktus-Drache", class: "monster-boss", hpMul: 4.5, goldMul: 6.0 }
+  { name: "Wüsten-Schnecke", img: "assets/snail.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f40c.png", hpMul: 1, goldMul: 1 },
+  { name: "Sand-Skorpion", img: "assets/scorpion.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f982.png", hpMul: 1.4, goldMul: 1.5 },
+  { name: "Stein-Golem", img: "assets/golem.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f5ff.png", hpMul: 2.2, goldMul: 2.5 },
+  { name: "BOSS: Kaktus-Drache", img: "assets/boss.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f409.png", hpMul: 4.5, goldMul: 6.0 }
 ];
 
 let floor = 1;
@@ -25,9 +25,8 @@ const waterEl = document.getElementById('water');
 const goldEl = document.getElementById('gold');
 const powerEl = document.getElementById('power');
 const cactusBtn = document.getElementById('cactus-clicker');
-const clickContainer = document.getElementById('clicker-zone');
 
-const monsterAvatar = document.getElementById('monster-avatar');
+const monsterImg = document.getElementById('monster-img');
 const monsterName = document.getElementById('monster-name');
 const monsterBadge = document.getElementById('monster-type-badge');
 const monsterHpEl = document.getElementById('monster-hp');
@@ -39,11 +38,61 @@ const dungeonZone = document.getElementById('dungeon-zone');
 const upgradeWaterBtn = document.getElementById('upgrade-water-btn');
 const upgradePowerBtn = document.getElementById('upgrade-power-btn');
 
-// GAMBLE ELEMENTE
 const spinSlotBtn = document.getElementById('spin-slot-btn');
 const slotDisplay = document.getElementById('slot-display');
 const openBoxBtn = document.getElementById('open-box-btn');
 const randomEventItem = document.getElementById('random-event-item');
+
+// CANVAS PARTIKEL-SYSTEM
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+class Particle {
+  constructor(x, y, color) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+    this.size = Math.random() * 6 + 2;
+    this.speedX = (Math.random() - 0.5) * 8;
+    this.speedY = (Math.random() - 0.5) * 8;
+    this.alpha = 1;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.alpha -= 0.03;
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function spawnParticles(x, y, color, count = 10) {
+  for (let i = 0; i < count; i++) {
+    particles.push(new Particle(x, y, color));
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach((p, index) => {
+    p.update();
+    p.draw();
+    if (p.alpha <= 0) particles.splice(index, 1);
+  });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
 
 // TABS SYSTEM
 document.getElementById('tab-upgrades-btn').addEventListener('click', (e) => switchTab(e, 'tab-upgrades'));
@@ -56,44 +105,46 @@ function switchTab(e, tabId) {
   document.getElementById(tabId).classList.add('active');
 }
 
-// KLICKER (MIT FLOATING DAMAGE/EFFECT)
+// KLICKER
 cactusBtn.addEventListener('click', (e) => {
   water += waterPerClick;
-  createFloatingText(e.clientX, e.clientY, `+${waterPerClick} 💧`);
+  createFloatingText(e.clientX, e.clientY, `+${waterPerClick} 💧`, '#66fcf1');
+  spawnParticles(e.clientX, e.clientY, '#66fcf1', 8);
   updateUI();
 });
 
-// ANGREIFEN (MIT SHAKE & FLOATING TEXT)
+// ANGREIFEN
 attackBtn.addEventListener('click', (e) => {
   monsterHp -= cactusPower;
   
-  // Effects
   dungeonZone.classList.add('shake');
-  setTimeout(() => dungeonZone.classList.remove('shake'), 150);
+  setTimeout(() => dungeonZone.classList.remove('shake'), 120);
+
   createFloatingText(e.clientX, e.clientY, `-${cactusPower}`, '#ff4757');
+  spawnParticles(e.clientX, e.clientY, '#ff4757', 12);
 
   if (monsterHp <= 0) {
     let reward = Math.floor(floor * 8 * currentMonster.goldMul);
     gold += reward;
     floor++;
+    createFloatingText(e.clientX, e.clientY - 30, `+${reward} GOLD! 🪙`, '#f1c40f');
+    spawnParticles(e.clientX, e.clientY, '#f1c40f', 25);
     spawnMonster();
   }
   updateUI();
 });
 
 function spawnMonster() {
-  // Boss jede 5 Ebenen
   if (floor % 5 === 0) {
     currentMonster = MONSTER_TYPES[3]; 
     monsterBadge.textContent = "BOSS";
-    monsterBadge.style.background = "#ff0055";
   } else {
     currentMonster = MONSTER_TYPES[Math.floor(Math.random() * 3)];
     monsterBadge.textContent = "Ebene " + floor;
-    monsterBadge.style.background = "#3d3d5c";
   }
 
-  monsterAvatar.className = "monster-icon " + currentMonster.class;
+  monsterImg.src = currentMonster.img;
+  monsterImg.onerror = () => monsterImg.src = currentMonster.fallback;
   monsterName.textContent = currentMonster.name;
   
   monsterMaxHp = Math.floor(20 * Math.pow(1.28, floor - 1) * currentMonster.hpMul);
@@ -146,8 +197,7 @@ openBoxBtn.addEventListener('click', () => {
   if (water < 100) return;
   water -= 100;
 
-  let chance = Math.random();
-  if (chance > 0.5) {
+  if (Math.random() > 0.5) {
     let winGold = Math.floor(gold * 0.5) + 20;
     gold += winGold;
     alert(`Gewinn! Du findest ${winGold} Gold!`);
@@ -157,7 +207,7 @@ openBoxBtn.addEventListener('click', () => {
   updateUI();
 });
 
-// ZUFALLS-EVENT (GOLDENER KAKTUS)
+// ZUFALLS-EVENT
 function triggerRandomEvent() {
   randomEventItem.classList.remove('hidden');
   setTimeout(() => randomEventItem.classList.add('hidden'), 4000);
@@ -167,13 +217,14 @@ setInterval(() => { if(Math.random() < 0.4) triggerRandomEvent(); }, 12000);
 randomEventItem.addEventListener('click', (e) => {
   let bonus = floor * 15;
   gold += bonus;
-  createFloatingText(e.clientX, e.clientY, `+${bonus} GOLD! ✨`, '#ffa502');
+  createFloatingText(e.clientX, e.clientY, `+${bonus} GOLD! ✨`, '#f1c40f');
+  spawnParticles(e.clientX, e.clientY, '#f1c40f', 20);
   randomEventItem.classList.add('hidden');
   updateUI();
 });
 
-// HELPER: FLOATING TEXT EFFECT
-function createFloatingText(x, y, text, color = '#2ed573') {
+// FLOATING TEXT
+function createFloatingText(x, y, text, color = '#66fcf1') {
   const el = document.createElement('div');
   el.className = 'floating-text';
   el.textContent = text;
@@ -181,7 +232,7 @@ function createFloatingText(x, y, text, color = '#2ed573') {
   el.style.top = `${y - 20}px`;
   el.style.color = color;
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), 700);
+  setTimeout(() => el.remove(), 600);
 }
 
 // UI UPDATE
