@@ -10,7 +10,14 @@
   <!-- Canvas für Partikeleffekte -->
   <canvas id="particle-canvas"></canvas>
 
-  <div id="game-container">
+  <!-- HAUPTMENÜ OVERLAY -->
+  <div id="main-menu">
+    <h1 class="game-title">🌵 CactusCrawler 🌵</h1>
+    <p class="subtitle">Erkunde das Wüstendungeon und entfessle die Elemente!</p>
+    <button id="start-game-btn" class="btn-action btn-gold btn-large">Spiel Starten ⚔️</button>
+  </div>
+
+  <div id="game-container" class="hidden">
     
     <!-- DUNGEON-BEREICH -->
     <section id="dungeon-zone">
@@ -42,17 +49,28 @@
 
       <div id="click-area">
         <img id="cactus-clicker" class="cactus-img" src="assets/cactus.png" alt="Kaktus" onerror="this.src='https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png'">
+        <button id="ability-btn" class="btn-action btn-ability">Fähigkeit nutzen ✨</button>
       </div>
 
       <!-- TABS SYSTEM -->
       <div class="tab-buttons">
         <button id="tab-upgrades-btn" class="tab-btn active">Upgrades</button>
+        <button id="tab-cacti-btn" class="tab-btn">🌵 Kakteen</button>
         <button id="tab-gamble-btn" class="tab-btn">🎰 Casino</button>
       </div>
 
       <div id="tab-upgrades" class="tab-content active">
         <button id="upgrade-water-btn" class="btn-action">Besserer Gießer (+1 💧/Klick)<br>Kosten: <span id="cost-water">10</span> 💧</button>
         <button id="upgrade-power-btn" class="btn-action">Stacheln schärfen (+1 PWR)<br>Kosten: <span id="cost-power">15</span> 🪙</button>
+      </div>
+
+      <div id="tab-cacti" class="tab-content">
+        <div class="cactus-grid">
+          <button class="cactus-select-btn active" data-cactus="normal">🌵 Normal</button>
+          <button class="cactus-select-btn" data-cactus="fire">🔥 Feuer</button>
+          <button class="cactus-select-btn" data-cactus="ice">❄️ Eis</button>
+          <button class="cactus-select-btn" data-cactus="electro">⚡ Elektro</button>
+        </div>
       </div>
 
       <div id="tab-gamble" class="tab-content">
