@@ -7,17 +7,22 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Canvas für Partikeleffekte -->
+  <canvas id="particle-canvas"></canvas>
+
   <div id="game-container">
     
     <!-- DUNGEON-BEREICH -->
     <section id="dungeon-zone">
       <div class="header-info">
         <h2>Dungeon Ebene <span id="floor">1</span></h2>
-        <span id="monster-type-badge" class="badge">Normal</span>
+        <span id="monster-type-badge" class="badge">Ebene 1</span>
       </div>
       
       <div id="monster-card">
-        <div id="monster-avatar" class="monster-icon glow"></div>
+        <div id="monster-avatar">
+          <img id="monster-img" src="assets/snail.png" alt="Monster" onerror="this.src='https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f40c.png'">
+        </div>
         <div id="monster-name">Wüsten-Schnecke</div>
         <div class="hp-bar-container">
           <div id="monster-hp-bar"></div>
@@ -36,13 +41,13 @@
       </div>
 
       <div id="click-area">
-        <div id="cactus-clicker" class="cactus-avatar"></div>
+        <img id="cactus-clicker" class="cactus-img" src="assets/cactus.png" alt="Kaktus" onerror="this.src='https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png'">
       </div>
 
-      <!-- TABS FÜR UPGRADES / GAMBLE -->
+      <!-- TABS SYSTEM -->
       <div class="tab-buttons">
         <button id="tab-upgrades-btn" class="tab-btn active">Upgrades</button>
-        <button id="tab-gamble-btn" class="tab-btn">🎰 Casino & Loot</button>
+        <button id="tab-gamble-btn" class="tab-btn">🎰 Casino</button>
       </div>
 
       <div id="tab-upgrades" class="tab-content active">
@@ -63,7 +68,7 @@
       </div>
     </section>
 
-    <!-- ZUFALLSEVENT: FLIEGENDER KAKTUS -->
+    <!-- ZUFALLSEVENT -->
     <div id="random-event-item" class="hidden">🌵✨</div>
 
   </div>
