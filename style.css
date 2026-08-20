@@ -6,20 +6,18 @@
 }
 
 body {
-  /* Wüsten-Hintergrund */
-  background: linear-gradient(180deg, #d97706 0%, #78350f 60%, #451a03 100%);
+  background: linear-gradient(180deg, #d97706 0%, #78350f 100%);
   color: #f8fafc;
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  overflow: hidden;
-  position: relative;
+  padding: 10px;
 }
 
 #particle-canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -28,57 +26,33 @@ body {
   pointer-events: none;
 }
 
-/* HAUPTMENÜ */
-#main-menu {
-  position: relative;
-  z-index: 10;
-  background-color: rgba(30, 41, 59, 0.95);
-  padding: 40px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-  border: 3px solid #f59e0b;
-  max-width: 450px;
-  width: 90%;
-}
-
-.game-title {
-  font-size: 2.2rem;
-  color: #f59e0b;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px #000;
-}
-
-.subtitle {
-  color: #cbd5e1;
-  margin-bottom: 25px;
-  font-size: 0.95rem;
-}
-
-.btn-large {
-  font-size: 1.2rem;
-  padding: 15px 25px;
-}
-
-/* GAME CONTAINER */
 #game-container {
   position: relative;
   z-index: 2;
   display: flex;
-  gap: 20px;
-  background-color: rgba(30, 41, 59, 0.92);
-  padding: 20px;
+  flex-direction: row;
+  gap: 15px;
+  background-color: rgba(30, 41, 59, 0.95);
+  padding: 15px;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-  max-width: 900px;
+  max-width: 850px;
   width: 100%;
-  border: 2px solid #b45309;
+}
+
+/* SMARTPHONE RESPONSIVE LAYOUT */
+@media (max-width: 650px) {
+  #game-container {
+    flex-direction: column;
+    max-height: 95vh;
+    overflow-y: auto;
+  }
 }
 
 section {
   flex: 1;
-  background-color: rgba(15, 23, 42, 0.85);
-  padding: 20px;
+  background-color: #0f172a;
+  padding: 15px;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -90,16 +64,15 @@ section {
   display: flex;
   justify-content: space-around;
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .stat-box, .badge {
   background-color: #334155;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 6px;
   font-weight: bold;
-  font-size: 0.9rem;
-  border: 1px solid #475569;
+  font-size: 0.85rem;
 }
 
 /* Cards & Click Area */
@@ -108,35 +81,42 @@ section {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 #monster-img, .cactus-img {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   image-rendering: pixelated;
   cursor: pointer;
-  transition: transform 0.1s;
+  transition: transform 0.08s;
 }
 
 #monster-img:active, .cactus-img:active {
-  transform: scale(0.92);
+  transform: scale(0.9);
+}
+
+#active-ability-info {
+  font-size: 0.8rem;
+  color: #38bdf8;
+  margin-top: 5px;
+  font-weight: bold;
 }
 
 .hp-bar-container {
   width: 100%;
-  height: 16px;
+  height: 14px;
   background-color: #334155;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 #monster-hp-bar {
   width: 100%;
   height: 100%;
   background-color: #ef4444;
-  transition: width 0.2s;
+  transition: width 0.15s;
 }
 
 /* Tabs */
@@ -149,13 +129,14 @@ section {
 
 .tab-btn {
   flex: 1;
-  padding: 8px;
+  padding: 8px 4px;
   background-color: #334155;
   color: #94a3b8;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 0.8rem;
 }
 
 .tab-btn.active {
@@ -171,58 +152,61 @@ section {
 .tab-content.active {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
-/* Cactus Grid Tab */
-.cactus-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+/* Kakteen Liste */
+.cacti-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
 }
 
-.cactus-select-btn {
-  padding: 12px;
-  background-color: #334155;
-  color: white;
-  border: 2px solid transparent;
+.cactus-card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
   border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.cactus-select-btn.active {
-  border-color: #f59e0b;
-  background-color: #1e293b;
+.cactus-info h4 { font-size: 0.85rem; }
+.cactus-info p { font-size: 0.7rem; color: #94a3b8; }
+.unlock-req { font-size: 0.65rem; color: #ef4444; font-weight: bold; display: block; }
+
+.cactus-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 /* Buttons */
 .btn-action {
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   border: none;
   border-radius: 6px;
   background-color: #22c55e;
   color: white;
   font-weight: bold;
+  font-size: 0.85rem;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
 }
 
-.btn-action:hover:not(:disabled) { transform: translateY(-2px); }
-.btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
-
+.btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
 .btn-red { background-color: #ef4444; }
 .btn-gold { background-color: #f59e0b; color: #0f172a; }
 .btn-purple { background-color: #a855f7; }
-.btn-ability { background-color: #06b6d4; margin-top: 10px; }
+.btn-small { padding: 4px 8px; font-size: 0.75rem; width: auto; }
 
 /* Dynamic Floating Text */
 .floating-text {
   position: absolute;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   pointer-events: none;
   animation: floatUp 0.6s ease-out forwards;
   z-index: 100;
@@ -230,17 +214,14 @@ section {
 
 @keyframes floatUp {
   0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-30px); }
+  100% { opacity: 0; transform: translateY(-25px); }
 }
 
-.shake {
-  animation: shake 0.12s ease-in-out;
-}
-
+.shake { animation: shake 0.12s ease-in-out; }
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
 
 .hidden { display: none !important; }
