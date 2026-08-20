@@ -1,4 +1,4 @@
-// AUDIO SYNTHESIZER (Web Audio API)
+// AUDIO SYNTHESIZER
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playSound(type) {
@@ -11,27 +11,25 @@ function playSound(type) {
   if (type === 'fire') {
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.3);
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-    osc.stop(audioCtx.currentTime + 0.3);
+    osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.25);
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+    osc.stop(audioCtx.currentTime + 0.25);
   } else if (type === 'ice') {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(2400, audioCtx.currentTime + 0.2);
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
     osc.stop(audioCtx.currentTime + 0.2);
   } else if (type === 'electro') {
     osc.type = 'square';
     osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-    osc.frequency.setValueAtTime(600, audioCtx.currentTime + 0.05);
-    osc.frequency.setValueAtTime(200, audioCtx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-    osc.stop(audioCtx.currentTime + 0.25);
+    osc.frequency.setValueAtTime(500, audioCtx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    osc.stop(audioCtx.currentTime + 0.2);
   } else {
-    // Normaler Klick Sound
     osc.type = 'sine';
     osc.frequency.setValueAtTime(400, audioCtx.currentTime);
     gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
@@ -44,7 +42,7 @@ function playSound(type) {
   osc.start();
 }
 
-// STATS & STATE
+// STATS
 let water = 0;
 let gold = 0;
 let waterPerClick = 1;
@@ -53,13 +51,13 @@ let cactusPower = 1;
 let waterUpgradeCost = 10;
 let powerUpgradeCost = 15;
 
+// KAKTEEN LEVEL & FREISCHALTUNG (NEUE EBENEN: 15, 25, 35)
 let activeCactus = 'normal';
-
-const CACTI_TYPES = {
-  normal: { img: "assets/cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png" },
-  fire: { img: "assets/fire_cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png" },
-  ice: { img: "assets/ice_cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png" },
-  electro: { img: "assets/electro_cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png" }
+let cacti = {
+  normal: { name: "Normaler Kaktus", img: "assets/cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png", lvl: 1, unlocked: true },
+  fire: { name: "Feuer-Kaktus", img: "assets/fire_cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png", lvl: 1, cost: 50, reqFloor: 15, unlocked: false },
+  ice: { name: "Eis-Kaktus", img: "assets/ice_cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png", lvl: 1, cost: 100, reqFloor: 25, unlocked: false },
+  electro: { name: "Elektro-Kaktus", img: "assets/electro_cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png", lvl: 1, cost: 200, reqFloor: 35, unlocked: false }
 };
 
 // MONSTER DATENBANK
@@ -76,15 +74,11 @@ let monsterMaxHp = 20;
 let monsterHp = 20;
 
 // DOM ELEMENTE
-const startGameBtn = document.getElementById('start-game-btn');
-const mainMenu = document.getElementById('main-menu');
-const gameContainer = document.getElementById('game-container');
-
 const waterEl = document.getElementById('water');
 const goldEl = document.getElementById('gold');
 const powerEl = document.getElementById('power');
 const cactusBtn = document.getElementById('cactus-clicker');
-const abilityBtn = document.getElementById('ability-btn');
+const currentCactusName = document.getElementById('current-cactus-name');
 
 const monsterImg = document.getElementById('monster-img');
 const monsterName = document.getElementById('monster-name');
@@ -103,13 +97,6 @@ const slotDisplay = document.getElementById('slot-display');
 const openBoxBtn = document.getElementById('open-box-btn');
 const randomEventItem = document.getElementById('random-event-item');
 
-// HAUPTMENÜ START
-startGameBtn.addEventListener('click', () => {
-  mainMenu.classList.add('hidden');
-  gameContainer.classList.remove('hidden');
-  playSound('click');
-});
-
 // CANVAS PARTIKEL-SYSTEM
 const canvas = document.getElementById('particle-canvas');
 const ctx = canvas.getContext('2d');
@@ -123,15 +110,15 @@ class Particle {
     this.x = x;
     this.y = y;
     this.color = color;
-    this.size = Math.random() * 6 + 2;
-    this.speedX = (Math.random() - 0.5) * 8;
-    this.speedY = (Math.random() - 0.5) * 8;
+    this.size = Math.random() * 5 + 2;
+    this.speedX = (Math.random() - 0.5) * 6;
+    this.speedY = (Math.random() - 0.5) * 6;
     this.alpha = 1;
   }
   update() {
     this.x += this.speedX;
     this.y += this.speedY;
-    this.alpha -= 0.03;
+    this.alpha -= 0.04;
   }
   draw() {
     ctx.save();
@@ -144,7 +131,7 @@ class Particle {
   }
 }
 
-function spawnParticles(x, y, color, count = 10) {
+function spawnParticles(x, y, color, count = 8) {
   for (let i = 0; i < count; i++) {
     particles.push(new Particle(x, y, color));
   }
@@ -173,49 +160,12 @@ function switchTab(e, tabId) {
   document.getElementById(tabId).classList.add('active');
 }
 
-// ELEMENTAR KAKTEEN AUSWAHL
-document.querySelectorAll('.cactus-select-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    document.querySelectorAll('.cactus-select-btn').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-    activeCactus = e.target.dataset.cactus;
-    
-    cactusBtn.src = CACTI_TYPES[activeCactus].img;
-    cactusBtn.onerror = () => cactusBtn.src = CACTI_TYPES[activeCactus].fallback;
-    playSound('click');
-  });
-});
-
 // KLICKER
 cactusBtn.addEventListener('click', (e) => {
   water += waterPerClick;
   playSound('click');
   createFloatingText(e.clientX, e.clientY, `+${waterPerClick} 💧`, '#66fcf1');
-  spawnParticles(e.clientX, e.clientY, '#66fcf1', 8);
-  updateUI();
-});
-
-// FÄHIGKEITEN
-abilityBtn.addEventListener('click', (e) => {
-  playSound(activeCactus);
-  if (activeCactus === 'fire') {
-    const dmg = cactusPower * 3;
-    monsterHp = Math.max(0, monsterHp - dmg);
-    createFloatingText(e.clientX, e.clientY, `🔥 Feuerball -${dmg}!`, '#ef4444');
-    spawnParticles(e.clientX, e.clientY, '#ef4444', 15);
-  } else if (activeCactus === 'ice') {
-    water += 15;
-    createFloatingText(e.clientX, e.clientY, `❄️ Frostblitz +15 💧!`, '#38bdf8');
-    spawnParticles(e.clientX, e.clientY, '#38bdf8', 15);
-  } else if (activeCactus === 'electro') {
-    gold += 10;
-    createFloatingText(e.clientX, e.clientY, `⚡ Schockwelle +10 🪙!`, '#eab308');
-    spawnParticles(e.clientX, e.clientY, '#eab308', 15);
-  } else {
-    water += 5;
-    createFloatingText(e.clientX, e.clientY, `🌵 Kaktus-Power +5 💧!`, '#22c55e');
-    spawnParticles(e.clientX, e.clientY, '#22c55e', 10);
-  }
+  spawnParticles(e.clientX, e.clientY, '#66fcf1', 6);
   updateUI();
 });
 
@@ -228,14 +178,14 @@ attackBtn.addEventListener('click', (e) => {
   setTimeout(() => dungeonZone.classList.remove('shake'), 120);
 
   createFloatingText(e.clientX, e.clientY, `-${cactusPower}`, '#ff4757');
-  spawnParticles(e.clientX, e.clientY, '#ff4757', 12);
+  spawnParticles(e.clientX, e.clientY, '#ff4757', 10);
 
   if (monsterHp <= 0) {
     let reward = Math.floor(floor * 8 * currentMonster.goldMul);
     gold += reward;
     floor++;
     createFloatingText(e.clientX, e.clientY - 30, `+${reward} GOLD! 🪙`, '#f1c40f');
-    spawnParticles(e.clientX, e.clientY, '#f1c40f', 25);
+    spawnParticles(e.clientX, e.clientY, '#f1c40f', 20);
     spawnMonster();
   }
   updateUI();
@@ -257,6 +207,61 @@ function spawnMonster() {
   monsterMaxHp = Math.floor(20 * Math.pow(1.28, floor - 1) * currentMonster.hpMul);
   monsterHp = monsterMaxHp;
 }
+
+// AUTOMATISCHE KAKTUS-FÄHIGKEITEN
+setInterval(() => {
+  if (activeCactus === 'fire') {
+    let dmg = cactusPower * 2 * cacti.fire.lvl;
+    monsterHp = Math.max(0, monsterHp - dmg);
+    playSound('fire');
+    if (monsterHp <= 0) {
+      let reward = Math.floor(floor * 8 * currentMonster.goldMul);
+      gold += reward;
+      floor++;
+      spawnMonster();
+    }
+  } else if (activeCactus === 'ice') {
+    let bonusWater = 5 * cacti.ice.lvl;
+    water += bonusWater;
+    playSound('ice');
+  } else if (activeCactus === 'electro') {
+    let bonusGold = 3 * cacti.electro.lvl;
+    gold += bonusGold;
+    playSound('electro');
+  }
+  updateUI();
+}, 3000);
+
+// KAKTEEN AUSWÄHLEN & LEVELN
+function selectCactus(key) {
+  if (!cacti[key].unlocked) return;
+  activeCactus = key;
+  cactusBtn.src = cacti[key].img;
+  cactusBtn.onerror = () => cactusBtn.src = cacti[key].fallback;
+  currentCactusName.textContent = cacti[key].name;
+  playSound('click');
+  updateUI();
+}
+
+function levelUpCactus(key) {
+  let c = cacti[key];
+  if (gold >= c.cost) {
+    gold -= c.cost;
+    c.lvl++;
+    c.cost = Math.floor(c.cost * 1.8);
+    playSound('click');
+    updateUI();
+  }
+}
+
+document.getElementById('select-normal-btn').addEventListener('click', () => selectCactus('normal'));
+document.getElementById('select-fire-btn').addEventListener('click', () => selectCactus('fire'));
+document.getElementById('select-ice-btn').addEventListener('click', () => selectCactus('ice'));
+document.getElementById('select-electro-btn').addEventListener('click', () => selectCactus('electro'));
+
+document.getElementById('lvl-fire-btn').addEventListener('click', () => levelUpCactus('fire'));
+document.getElementById('lvl-ice-btn').addEventListener('click', () => levelUpCactus('ice'));
+document.getElementById('lvl-electro-btn').addEventListener('click', () => levelUpCactus('electro'));
 
 // UPGRADES
 upgradeWaterBtn.addEventListener('click', () => {
@@ -327,7 +332,7 @@ randomEventItem.addEventListener('click', (e) => {
   let bonus = floor * 15;
   gold += bonus;
   createFloatingText(e.clientX, e.clientY, `+${bonus} GOLD! ✨`, '#f1c40f');
-  spawnParticles(e.clientX, e.clientY, '#f1c40f', 20);
+  spawnParticles(e.clientX, e.clientY, '#f1c40f', 15);
   randomEventItem.classList.add('hidden');
   updateUI();
 });
@@ -364,6 +369,19 @@ function updateUI() {
 
   let hpPercent = Math.max(0, (monsterHp / monsterMaxHp) * 100);
   monsterHpBar.style.width = hpPercent + '%';
+
+  // Kaktus Freischaltungs-Prüfung & Level UI
+  ['fire', 'ice', 'electro'].forEach(key => {
+    let c = cacti[key];
+    if (floor >= c.reqFloor) {
+      c.unlocked = true;
+      document.getElementById(`req-${key}`).style.display = 'none';
+      document.getElementById(`select-${key}-btn`).disabled = false;
+    }
+    document.getElementById(`lvl-${key}`).textContent = c.lvl;
+    document.getElementById(`cost-lvl-${key}`).textContent = c.cost;
+    document.getElementById(`lvl-${key}-btn`).disabled = !c.unlocked || gold < c.cost;
+  });
 }
 
 updateUI();
