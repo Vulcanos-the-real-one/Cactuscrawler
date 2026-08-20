@@ -7,17 +7,9 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Canvas für Partikeleffekte -->
   <canvas id="particle-canvas"></canvas>
 
-  <!-- HAUPTMENÜ OVERLAY -->
-  <div id="main-menu">
-    <h1 class="game-title">🌵 CactusCrawler 🌵</h1>
-    <p class="subtitle">Erkunde das Wüstendungeon und entfessle die Elemente!</p>
-    <button id="start-game-btn" class="btn-action btn-gold btn-large">Spiel Starten ⚔️</button>
-  </div>
-
-  <div id="game-container" class="hidden">
+  <div id="game-container">
     
     <!-- DUNGEON-BEREICH -->
     <section id="dungeon-zone">
@@ -49,7 +41,7 @@
 
       <div id="click-area">
         <img id="cactus-clicker" class="cactus-img" src="assets/cactus.png" alt="Kaktus" onerror="this.src='https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png'">
-        <button id="ability-btn" class="btn-action btn-ability">Fähigkeit nutzen ✨</button>
+        <div id="active-ability-info">Aktiv: <span id="current-cactus-name">Normaler Kaktus</span></div>
       </div>
 
       <!-- TABS SYSTEM -->
@@ -65,11 +57,52 @@
       </div>
 
       <div id="tab-cacti" class="tab-content">
-        <div class="cactus-grid">
-          <button class="cactus-select-btn active" data-cactus="normal">🌵 Normal</button>
-          <button class="cactus-select-btn" data-cactus="fire">🔥 Feuer</button>
-          <button class="cactus-select-btn" data-cactus="ice">❄️ Eis</button>
-          <button class="cactus-select-btn" data-cactus="electro">⚡ Elektro</button>
+        <div class="cacti-list">
+          
+          <div class="cactus-card" id="card-normal">
+            <div class="cactus-info">
+              <h4>Normaler Kaktus (Lvl <span id="lvl-normal">1</span>)</h4>
+              <p>Passiv: Keines</p>
+            </div>
+            <button id="select-normal-btn" class="btn-action btn-small btn-gold">Wählen</button>
+          </div>
+
+          <div class="cactus-card" id="card-fire">
+            <div class="cactus-info">
+              <h4>🔥 Feuer (Lvl <span id="lvl-fire">1</span>)</h4>
+              <p>Auto-Feuerball (Schaden)</p>
+              <span class="unlock-req" id="req-fire">Freischaltung: Ebene 15</span>
+            </div>
+            <div class="cactus-actions">
+              <button id="select-fire-btn" class="btn-action btn-small btn-gold" disabled>Wählen</button>
+              <button id="lvl-fire-btn" class="btn-action btn-small" disabled>Lvl Up (<span id="cost-lvl-fire">50</span>🪙)</button>
+            </div>
+          </div>
+
+          <div class="cactus-card" id="card-ice">
+            <div class="cactus-info">
+              <h4>❄️ Eis (Lvl <span id="lvl-ice">1</span>)</h4>
+              <p>Auto-Frost (+Wasser)</p>
+              <span class="unlock-req" id="req-ice">Freischaltung: Ebene 25</span>
+            </div>
+            <div class="cactus-actions">
+              <button id="select-ice-btn" class="btn-action btn-small btn-gold" disabled>Wählen</button>
+              <button id="lvl-ice-btn" class="btn-action btn-small" disabled>Lvl Up (<span id="cost-lvl-ice">100</span>🪙)</button>
+            </div>
+          </div>
+
+          <div class="cactus-card" id="card-electro">
+            <div class="cactus-info">
+              <h4>⚡ Elektro (Lvl <span id="lvl-electro">1</span>)</h4>
+              <p>Auto-Schock (+Gold)</p>
+              <span class="unlock-req" id="req-electro">Freischaltung: Ebene 35</span>
+            </div>
+            <div class="cactus-actions">
+              <button id="select-electro-btn" class="btn-action btn-small btn-gold" disabled>Wählen</button>
+              <button id="lvl-electro-btn" class="btn-action btn-small" disabled>Lvl Up (<span id="cost-lvl-electro">200</span>🪙)</button>
+            </div>
+          </div>
+
         </div>
       </div>
 
