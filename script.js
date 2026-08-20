@@ -51,7 +51,7 @@ let cactusPower = 1;
 let waterUpgradeCost = 10;
 let powerUpgradeCost = 15;
 
-// KAKTEEN LEVEL & FREISCHALTUNG (NEUE EBENEN: 15, 25, 35)
+// KAKTEEN LEVEL & FREISCHALTUNG (15, 25, 35)
 let activeCactus = 'normal';
 let cacti = {
   normal: { name: "Normaler Kaktus", img: "assets/cactus.png", fallback: "https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f335.png", lvl: 1, unlocked: true },
